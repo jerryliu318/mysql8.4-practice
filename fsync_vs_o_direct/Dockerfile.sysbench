@@ -1,0 +1,10 @@
+FROM ubuntu:22.04
+
+# 安裝 sysbench 和 mysql-client
+RUN apt-get update && \
+    apt-get install -y sysbench mysql-client && \
+    rm -rf /var/lib/apt/lists/*
+
+# 保持容器運行以便進入執行命令
+CMD ["tail", "-f", "/dev/null"]
+
