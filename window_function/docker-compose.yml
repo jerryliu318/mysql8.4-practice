@@ -1,0 +1,13 @@
+services:
+  mysql_window:
+    image: mysql:8.4
+    container_name: mysql_window_practice
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: shop
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    # MySQL 8.4 已不再需要 (也不支援) 指定 mysql_native_password，預設為 caching_sha2_password
+    # command: --default-authentication-plugin=mysql_native_password

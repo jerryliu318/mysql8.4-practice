@@ -1,0 +1,23 @@
+services:
+  mysql84:
+    image: mysql:8.4
+    container_name: mysql84_test
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3384:3306"
+    # 請在此處切換 innodb-flush-method (fsync vs O_DIRECT)
+    # 測試 fsync 時取消註解下面這行:
+    command: --innodb-flush-method=fsync
+    # 測試 O_DIRECT 時取消註解下面這行 (預設):
+    # command: --innodb-flush-method=O_DIRECT
+
+  sysbench:
+    build:
+      context: .
+      dockerfile: Dockerfile.sysbench
+    container_name: sysbench_runner
+    volumes:
+      - .:/tests
+    depends_on:
+      - mysql84

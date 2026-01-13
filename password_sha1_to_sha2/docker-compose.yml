@@ -1,0 +1,30 @@
+services:
+  mysql_server:
+    image: mysql:8.0 # 如果要測試升級需改成 mysql:8.4
+    # command: --mysql-native-password=ON # 這行指令是讓 8.4 也支援 native authentication
+    container_name: mysql_demo_server
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-u", "root", "-proot_password"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  client_tester:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      mysql_server:
+        condition: service_healthy
+    environment:
+      - PYTHONUNBUFFERED=1
+
+volumes:
+  mysql_data:
